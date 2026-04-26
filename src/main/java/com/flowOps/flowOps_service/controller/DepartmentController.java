@@ -3,6 +3,7 @@ package com.flowOps.flowOps_service.controller;
 import com.flowOps.flowOps_service.dto.department.DepartmentDto;
 import com.flowOps.flowOps_service.entity.department.Department;
 import com.flowOps.flowOps_service.service.DepartmentService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/department")
+@Tag(name = "Department APIs", description = "Department management operations")
 public class DepartmentController {
     @Autowired
     private DepartmentService departmentService;
