@@ -8,10 +8,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/tasks")
@@ -28,4 +27,29 @@ public class TaskController {
         TaskDto createdTask=taskService.createTask(taskDto);
         return ResponseUtil.created(createdTask,"Task Created Successfully");
     }
+    @GetMapping()
+    public  ResponseEntity<APIResponse<List<TaskDto>>>getAllTasks()
+    {
+        List<TaskDto> tasks=taskService.getAllTasks();
+        return  ResponseUtil.success(tasks,"Task Retrieved Successfully");
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<APIResponse<TaskDto>> getTaskById(@PathVariable Long id)
+    {
+        TaskDto task=taskService.getTaskById(id);
+        return  ResponseUtil.success(task,"Task Retrieved Successfully");
+    }
+    @PutMapping("/{id}")
+    public ResponseEntity<APIResponse<TaskDto>>updateTask(@PathVariable Long id, @Valid @RequestBody TaskDto taskDto)
+    {
+        TaskDto updatedTask=taskService.updateTask(id,taskDto);
+        return ResponseUtil.success(updatedTask,"Task Updated Successfully");
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<APIResponse<String>> deleteTask(@PathVariable Long id)
+    {
+        taskService.deleteTask(id);
+        return ResponseUtil.success(null,"Task Deleted Successfully");
+    }
 }
+
