@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import java.time.LocalDateTime;
 
 public class ResponseUtil {
-    public static <T>ResponseEntity<APIResponse<T>> success (T data,String message)
+    public static <T> ResponseEntity<APIResponse<T>> success (T data,String message)
     {
         APIResponse<T> response=APIResponse.<T>builder()
                 .statusCode(HttpStatus.OK.value())
