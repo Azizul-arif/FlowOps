@@ -2,6 +2,7 @@ package com.flowOps.flowOps_service.entity.task;
 
 import com.flowOps.flowOps_service.common.enums.TaskPriority;
 import com.flowOps.flowOps_service.common.enums.TaskStatus;
+import com.flowOps.flowOps_service.entity.project.Project;
 import com.flowOps.flowOps_service.entity.user.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -43,6 +44,10 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "parent_task_id")
     private Task parentTask;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "project_id", nullable = false)
+    private Project project;
 
 
     private LocalDate dueDate;

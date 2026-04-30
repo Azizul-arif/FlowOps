@@ -26,5 +26,6 @@ public class TaskDto {
     private Long assignedToId;
     private Long createdById;
     private Long parentTaskId;
+    private Long projectId;
     private LocalDate dueDate;
 }
