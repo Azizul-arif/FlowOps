@@ -1,4 +1,4 @@
-package com.flowOps.flowOps_service.service.impl;
+package com.flowOps.flowOps_service.service;
 
 import com.flowOps.flowOps_service.dto.userDto.UserDto;
 

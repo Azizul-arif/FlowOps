@@ -1,5 +1,6 @@
 package com.flowOps.flowOps_service.entity.project;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.flowOps.flowOps_service.common.enums.ProjectStatus;
 import com.flowOps.flowOps_service.entity.task.Task;
 import com.flowOps.flowOps_service.entity.user.User;
@@ -44,6 +45,8 @@ public class Project {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+
+    @JsonManagedReference
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private List<Task> tasks;
 }

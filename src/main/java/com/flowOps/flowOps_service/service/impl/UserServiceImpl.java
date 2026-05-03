@@ -4,6 +4,7 @@ import com.flowOps.flowOps_service.converter.userConverter.UserConverter;
 import com.flowOps.flowOps_service.dto.userDto.UserDto;
 import com.flowOps.flowOps_service.entity.user.User;
 import com.flowOps.flowOps_service.repository.UserRepository;
+import com.flowOps.flowOps_service.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

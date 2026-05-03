@@ -1,5 +1,6 @@
 package com.flowOps.flowOps_service.entity.task;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.flowOps.flowOps_service.common.enums.TaskPriority;
 import com.flowOps.flowOps_service.common.enums.TaskStatus;
 import com.flowOps.flowOps_service.entity.project.Project;
@@ -45,6 +46,7 @@ public class Task {
     @JoinColumn(name = "parent_task_id")
     private Task parentTask;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
