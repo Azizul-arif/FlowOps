@@ -1,7 +1,7 @@
 package com.flowOps.flowOps_service.controller;
 
 import com.flowOps.flowOps_service.dto.userDto.UserDto;
-import com.flowOps.flowOps_service.service.impl.UserService;
+import com.flowOps.flowOps_service.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
