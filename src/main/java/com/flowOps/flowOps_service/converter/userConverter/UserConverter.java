@@ -30,6 +30,7 @@ public class UserConverter {
         User user = new User();
         user.setId(userDto.getUserId());
         user.setName(userDto.getName());
+        user.setUserName(userDto.getUserName());
         user.setEmail(userDto.getEmail());
         user.setPassword(userDto.getPassword());
         user.setStatus(userDto.getStatus());
@@ -54,6 +55,7 @@ public class UserConverter {
         return UserDto.builder()
                 .userId(user.getId())
                 .name(user.getName())
+                .userName(user.getUserName())
                 .email(user.getEmail())
                 .password(user.getPassword())
                 .status(user.getStatus())
