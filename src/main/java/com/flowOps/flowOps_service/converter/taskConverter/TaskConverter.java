@@ -4,6 +4,8 @@ import com.flowOps.flowOps_service.dto.taskDto.TaskDto;
 import com.flowOps.flowOps_service.entity.project.Project;
 import com.flowOps.flowOps_service.entity.task.Task;
 import com.flowOps.flowOps_service.entity.user.User;
+import com.flowOps.flowOps_service.common.enums.TaskPriority;
+import com.flowOps.flowOps_service.common.enums.TaskStatus;
 import com.flowOps.flowOps_service.repository.ProjectRepository;
 import com.flowOps.flowOps_service.repository.TaskRepository;
 import com.flowOps.flowOps_service.repository.UserRepository;
@@ -38,8 +40,8 @@ public class TaskConverter {
 
         task.setTitle(taskDto.getTitle());
         task.setDescription(taskDto.getDescription());
-        task.setPriority(taskDto.getPriority());
-        task.setStatus(taskDto.getStatus());
+        task.setPriority(taskDto.getPriority() != null ? taskDto.getPriority() : TaskPriority.LOW);
+        task.setStatus(taskDto.getStatus() != null ? taskDto.getStatus() : TaskStatus.TODO);
         task.setDueDate(taskDto.getDueDate());
 
         // Null-safe assigned user
@@ -61,6 +63,9 @@ public class TaskConverter {
             Task parent = taskRepository.findById(taskDto.getParentTaskId())
                     .orElseThrow(() -> new RuntimeException("Parent task not found"));
             task.setParentTask(parent);
+            if (taskDto.getProjectId() != null && parent.getProject() != null && !parent.getProject().getId().equals(taskDto.getProjectId())) {
+                throw new RuntimeException("Parent task must belong to the same project");
+            }
         }
 
         // Project (mandatory)

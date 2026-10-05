@@ -1,11 +1,13 @@
 package com.flowOps.flowOps_service.controller;
 
+import com.flowOps.flowOps_service.dto.userDto.CurrentUserDto;
 import com.flowOps.flowOps_service.dto.userDto.UserDto;
 import com.flowOps.flowOps_service.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -41,5 +43,13 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<CurrentUserDto> getCurrentUser(Authentication authentication
+    )
+    {
+        String email=authentication.getName();
+        return  ResponseEntity.ok(userService.getCurrentUser(email));
     }
 }

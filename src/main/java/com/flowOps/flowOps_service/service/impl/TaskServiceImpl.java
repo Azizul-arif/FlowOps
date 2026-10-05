@@ -5,8 +5,10 @@ import com.flowOps.flowOps_service.converter.taskConverter.TaskConverter;
 import com.flowOps.flowOps_service.dto.taskDto.TaskDto;
 import com.flowOps.flowOps_service.entity.task.Task;
 import com.flowOps.flowOps_service.entity.user.User;
+import com.flowOps.flowOps_service.common.exception.BadRequestException;
 import com.flowOps.flowOps_service.repository.TaskRepository;
 import com.flowOps.flowOps_service.repository.UserRepository;
+import com.flowOps.flowOps_service.repository.ProjectmemberRepository;
 import com.flowOps.flowOps_service.service.TaskService;
 import org.springframework.stereotype.Service;
 
@@ -17,28 +19,39 @@ public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
     private final TaskConverter taskConverter;
     private final UserRepository userRepository;
+    private final ProjectmemberRepository projectmemberRepository;
 
-    public TaskServiceImpl(TaskRepository taskRepository,TaskConverter taskConverter,UserRepository userRepository)
+    public TaskServiceImpl(TaskRepository taskRepository,TaskConverter taskConverter,UserRepository userRepository, ProjectmemberRepository projectmemberRepository)
     {
         this.taskRepository=taskRepository;
         this.taskConverter=taskConverter;
         this.userRepository=userRepository;
+        this.projectmemberRepository = projectmemberRepository;
     }
 
     // CREATE TASK
     @Override
-    public TaskDto createTask(TaskDto dto) {
+    public TaskDto createTask(TaskDto dto, String creatorEmail) {
 
         Task task = taskConverter.convertDtoToEntity(dto);
 
-        // createdBy will come from logged-in user (future)
-        // TEMP (until auth added)
-        User creator = userRepository.findById(1L)
-                .orElseThrow(() -> new RuntimeException("Creator not found"));
+        User creator = userRepository.findByEmail(creatorEmail).orElseThrow(() -> new RuntimeException("Creator not found"));
+        if (task.getAssignedTo() != null && !task.getAssignedTo().getId().equals(creator.getId())) {
+            if (!projectmemberRepository.existsByProjectIdAndUserIdAndRemovedAtIsNull(task.getProject().getId(), task.getAssignedTo().getId())) throw new BadRequestException("Assigned user must be an active project member");
+            Integer creatorLevel = creator.getDesignation().getLevel();
+            Integer assigneeLevel = task.getAssignedTo().getDesignation().getLevel();
+            if (creatorLevel == null || assigneeLevel == null || assigneeLevel >= creatorLevel) throw new BadRequestException("Tasks can only be assigned to users at a lower designation level");
+        }
+        if (task.getParentTask() != null && !task.getParentTask().getProject().getId().equals(task.getProject().getId())) throw new BadRequestException("Parent task must belong to the same project");
 
         task.setCreatedBy(creator);
         Task savedTask = taskRepository.save(task);
         return taskConverter.convertEntityToDto(savedTask);
+    }
+
+    @Override
+    public List<TaskDto> getTasksByProject(Long projectId) {
+        return taskRepository.findByProjectId(projectId).stream().map(taskConverter::convertEntityToDto).toList();
     }
 
     //GET BY ID
@@ -80,6 +93,7 @@ public class TaskServiceImpl implements TaskService {
                     .orElseThrow(() -> new RuntimeException("Assigned user not found"));
             existingTask.setAssignedTo(assignedUser);
         }
+        if (dto.getStatus() != null) validateStatusTransition(existingTask.getStatus(), dto.getStatus());
 
         Task updatedTask = taskRepository.save(existingTask);
 

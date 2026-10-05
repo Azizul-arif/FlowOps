@@ -1,5 +1,9 @@
 package com.flowOps.flowOps_service.converter.userConverter;
 
+import com.flowOps.flowOps_service.dto.department.DepartmentDto;
+import com.flowOps.flowOps_service.dto.designation.DesignationDto;
+import com.flowOps.flowOps_service.dto.role.RoleDto;
+import com.flowOps.flowOps_service.dto.userDto.CurrentUserDto;
 import com.flowOps.flowOps_service.dto.userDto.UserDto;
 import com.flowOps.flowOps_service.entity.department.Department;
 import com.flowOps.flowOps_service.entity.designation.Designation;
@@ -69,6 +73,45 @@ public class UserConverter {
                 )
                 .createdAt(user.getCreatedAt())
                 .updatedAt(user.getUpdatedAt())
+                .build();
+    }
+
+    public CurrentUserDto convertEntityToCurrentUserDto(User user) {
+
+        DepartmentDto departmentDto = DepartmentDto.builder()
+                .departmentId(user.getDepartment().getId())
+                .departmentName(user.getDepartment().getDepartmentName())
+                .createdAt(user.getDepartment().getCreatedAt())
+                .updatedAt(user.getDepartment().getUpdatedAt())
+                .build();
+
+        DesignationDto designationDto = DesignationDto.builder()
+                .designation_id(user.getDesignation().getId())
+                .designationName(user.getDesignation().getDesignationName())
+                .level(user.getDesignation().getLevel())
+                .createdAt(user.getDesignation().getCreatedAt())
+                .updatedAt(user.getDesignation().getUpdatedAt())
+                .build();
+
+        Set<RoleDto> roleDtos = user.getRoles()
+                .stream()
+                .map(role -> RoleDto.builder()
+                        .roleId(role.getId())
+                        .roleName(role.getRoleName())
+                        .createdAt(role.getCreatedAt())
+                        .updatedAt(role.getUpdatedAt())
+                        .build())
+                .collect(Collectors.toSet());
+
+        return CurrentUserDto.builder()
+                .userId(user.getId())
+                .name(user.getName())
+                .userName(user.getUserName())
+                .email(user.getEmail())
+                .userStatus(user.getStatus())
+                .department(departmentDto)
+                .designation(designationDto)
+                .roles(roleDtos)
                 .build();
     }
 }

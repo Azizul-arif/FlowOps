@@ -6,11 +6,12 @@ import com.flowOps.flowOps_service.dto.taskDto.TaskDto;
 import java.util.List;
 
 public interface TaskService {
-    TaskDto createTask(TaskDto taskDto);
+    TaskDto createTask(TaskDto taskDto, String creatorEmail);
 
     TaskDto getTaskById(Long id);
 
     List<TaskDto> getAllTasks();
+    List<TaskDto> getTasksByProject(Long projectId);
 
     TaskDto updateTask(Long id, TaskDto taskDto);
 

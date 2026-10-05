@@ -1,5 +1,6 @@
 package com.flowOps.flowOps_service.controller;
 
+import com.flowOps.flowOps_service.common.enums.TaskStatus;
 import com.flowOps.flowOps_service.common.response.APIResponse;
 import com.flowOps.flowOps_service.common.utils.ResponseUtil;
 import com.flowOps.flowOps_service.dto.taskDto.TaskDto;
@@ -9,6 +10,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 
@@ -22,10 +24,19 @@ public class TaskController {
         this.taskService=taskService;
     }
     @PostMapping()
-    public ResponseEntity<APIResponse<TaskDto>> createTask(@Valid @RequestBody TaskDto taskDto)
+    public ResponseEntity<APIResponse<TaskDto>> createTask(@Valid @RequestBody TaskDto taskDto, Authentication authentication)
     {
-        TaskDto createdTask=taskService.createTask(taskDto);
+        TaskDto createdTask=taskService.createTask(taskDto, authentication.getName());
         return ResponseUtil.created(createdTask,"Task Created Successfully");
+    }
+    @GetMapping("/project/{projectId}")
+    public ResponseEntity<APIResponse<List<TaskDto>>> getTasksByProject(@PathVariable Long projectId) {
+        return ResponseUtil.success(taskService.getTasksByProject(projectId), "Project Tasks Retrieved Successfully");
+    }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<APIResponse<TaskDto>> updateStatus(@PathVariable Long id, @RequestParam TaskStatus status) {
+        return ResponseUtil.success(taskService.updateTaskStatus(id, status), "Task Status Updated Successfully");
     }
     @GetMapping()
     public  ResponseEntity<APIResponse<List<TaskDto>>>getAllTasks()

@@ -4,4 +4,5 @@ import com.flowOps.flowOps_service.entity.projectMember.ProjectMember;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ProjectmemberRepository extends JpaRepository<ProjectMember,Long> {
+    boolean existsByProjectIdAndUserIdAndRemovedAtIsNull(Long projectId, Long userId);
 }

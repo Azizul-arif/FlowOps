@@ -1,6 +1,7 @@
 package com.flowOps.flowOps_service.service.impl;
 
 import com.flowOps.flowOps_service.converter.userConverter.UserConverter;
+import com.flowOps.flowOps_service.dto.userDto.CurrentUserDto;
 import com.flowOps.flowOps_service.dto.userDto.UserDto;
 import com.flowOps.flowOps_service.entity.user.User;
 import com.flowOps.flowOps_service.repository.UserRepository;
@@ -53,5 +54,12 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
         userRepository.delete(user);
+    }
+
+    @Override
+    public CurrentUserDto getCurrentUser(String email) {
+        User user=userRepository.findByEmail(email)
+                .orElseThrow(()->new RuntimeException("user not found with email: " +email));
+        return userConverter.convertEntityToCurrentUserDto(user);
     }
 }
